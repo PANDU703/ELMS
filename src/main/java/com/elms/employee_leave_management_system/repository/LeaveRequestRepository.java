@@ -1,0 +1,9 @@
+package com.elms.employee_leave_management_system.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.elms.employee_leave_management_system.entity.LeaveRequest;
+
+public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long> {
+
+}
