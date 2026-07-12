@@ -9,14 +9,17 @@ import com.elms.employee_leave_management_system.enums.LeaveStatus;
 import com.elms.employee_leave_management_system.exception.ResourceNotFoundException;
 import com.elms.employee_leave_management_system.repository.LeaveRequestRepository;
 import com.elms.employee_leave_management_system.service.LeaveRequestService;
+import com.elms.employee_leave_management_system.service.email.EmailService;
 
 @Service
 public class LeaveRequestServiceImpl implements LeaveRequestService {
 
     private final LeaveRequestRepository leaveRequestRepository;
+    private final EmailService emailService;
 
-    public LeaveRequestServiceImpl(LeaveRequestRepository leaveRequestRepository) {
+    public LeaveRequestServiceImpl(LeaveRequestRepository leaveRequestRepository, EmailService emailService) {
         this.leaveRequestRepository = leaveRequestRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -40,20 +43,34 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     @Override
     public LeaveRequest approveLeave(Long id) {
 
-        LeaveRequest leave = getLeaveRequestById(id);
+    LeaveRequest leave = getLeaveRequestById(id);
 
-        leave.setStatus(LeaveStatus.APPROVED);
+    leave.setStatus(LeaveStatus.APPROVED);
 
-        return leaveRequestRepository.save(leave);
+    LeaveRequest savedLeave = leaveRequestRepository.save(leave);
+
+    emailService.sendLeaveApprovedEmail(
+            savedLeave.getEmployee().getEmail(),
+            savedLeave.getEmployee().getFirstName()
+    );
+
+    return savedLeave;
     }
 
     @Override
     public LeaveRequest rejectLeave(Long id) {
 
-        LeaveRequest leave = getLeaveRequestById(id);
+    LeaveRequest leave = getLeaveRequestById(id);
 
-        leave.setStatus(LeaveStatus.REJECTED);
+    leave.setStatus(LeaveStatus.REJECTED);
 
-        return leaveRequestRepository.save(leave);
-    }
+    LeaveRequest savedLeave = leaveRequestRepository.save(leave);
+
+    emailService.sendLeaveRejectedEmail(
+            savedLeave.getEmployee().getEmail(),
+            savedLeave.getEmployee().getFirstName()
+    );
+
+    return savedLeave;
+}
 }

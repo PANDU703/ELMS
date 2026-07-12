@@ -30,4 +30,14 @@ public class HomeController {
     public String profile() {
         return "profile";
     }
+
+    @GetMapping("/manager-dashboard")
+    public String managerDashboard() {
+    return "manager-dashboard";
+    }
+
+    @GetMapping("/manage-leaves")
+    public String manageLeaves() {
+    return "manage-leaves";
+    }
 }

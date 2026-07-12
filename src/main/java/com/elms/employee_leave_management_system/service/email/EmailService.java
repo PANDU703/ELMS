@@ -45,4 +45,56 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void sendLeaveApprovedEmail(String toEmail,
+                                   String employeeName) {
+
+    SimpleMailMessage message = new SimpleMailMessage();
+
+    message.setFrom("kotagirimanoj2006@gmail.com");
+    message.setTo(toEmail);
+
+    message.setSubject("✅ Leave Approved | ELMS Pro");
+
+    message.setText(
+            "Hello " + employeeName + ",\n\n" +
+
+            "Congratulations!\n\n" +
+
+            "Your leave request has been APPROVED by the manager.\n\n" +
+
+            "Enjoy your leave.\n\n" +
+
+            "Regards,\n" +
+            "ELMS Pro Team"
+    );
+
+    mailSender.send(message);
+}
+
+public void sendLeaveRejectedEmail(String toEmail,
+                                   String employeeName) {
+
+    SimpleMailMessage message = new SimpleMailMessage();
+
+    message.setFrom("kotagirimanoj2006@gmail.com");
+    message.setTo(toEmail);
+
+    message.setSubject("❌ Leave Rejected | ELMS Pro");
+
+    message.setText(
+            "Hello " + employeeName + ",\n\n" +
+
+            "We are sorry to inform you that your leave request has been REJECTED.\n\n" +
+
+            "Please contact your manager for more information.\n\n" +
+
+            "Regards,\n" +
+            "ELMS Pro Team"
+    );
+
+    mailSender.send(message);
+}
+
+
 }
