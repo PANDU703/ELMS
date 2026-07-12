@@ -2,26 +2,53 @@ package com.elms.employee_leave_management_system.service.impl;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.elms.employee_leave_management_system.entity.Employee;
 import com.elms.employee_leave_management_system.exception.ResourceNotFoundException;
 import com.elms.employee_leave_management_system.repository.EmployeeRepository;
 import com.elms.employee_leave_management_system.service.EmployeeService;
+import com.elms.employee_leave_management_system.service.email.EmailService;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository,
+                           PasswordEncoder passwordEncoder,
+                           EmailService emailService) {
+
+    this.employeeRepository = employeeRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.emailService = emailService;
+}
 
     @Override
     public Employee saveEmployee(Employee employee) {
-        return employeeRepository.save(employee);
-    }
+
+    employee.setPassword(
+            passwordEncoder.encode(employee.getPassword())
+    );
+
+    Employee savedEmployee = employeeRepository.save(employee);
+    
+
+    emailService.sendWelcomeEmail(
+
+            savedEmployee.getEmail(),
+
+            savedEmployee.getFirstName(),
+
+            savedEmployee.getEmployeeCode()
+
+    );
+
+    return savedEmployee;
+}
 
     @Override
     public List<Employee> getAllEmployees() {
@@ -64,4 +91,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employeeRepository.save(existingEmployee);
     }
+
+    @Override
+    public Employee loginEmployee(String email, String password) {
+
+    Employee employee = employeeRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("Invalid Email"));
+
+    if (!passwordEncoder.matches(password, employee.getPassword())) {
+        throw new RuntimeException("Invalid Password");
+    }
+
+    return employee;
+}
+
 }

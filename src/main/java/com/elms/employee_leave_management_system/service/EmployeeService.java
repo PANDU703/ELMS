@@ -16,4 +16,6 @@ public interface EmployeeService {
 
     void deleteEmployee(Long id);
 
+    Employee loginEmployee(String email, String password);
+
 }
