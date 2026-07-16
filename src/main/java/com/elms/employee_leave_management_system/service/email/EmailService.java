@@ -3,6 +3,8 @@ package com.elms.employee_leave_management_system.service.email;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import com.elms.employee_leave_management_system.entity.LeaveRequest;
+
 
 @Service
 public class EmailService {
@@ -46,55 +48,93 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendLeaveApprovedEmail(String toEmail,
-                                   String employeeName) {
+public void sendLeaveApprovedEmail(LeaveRequest leaveRequest) {
 
     SimpleMailMessage message = new SimpleMailMessage();
 
     message.setFrom("kotagirimanoj2006@gmail.com");
-    message.setTo(toEmail);
 
-    message.setSubject("✅ Leave Approved | ELMS Pro");
+    message.setTo(leaveRequest.getEmployee().getEmail());
+
+    message.setSubject("✅ ELMS Pro | Leave Request Approved");
 
     message.setText(
-            "Hello " + employeeName + ",\n\n" +
 
-            "Congratulations!\n\n" +
+            "Dear " + leaveRequest.getEmployee().getFirstName() + ",\n\n" +
 
-            "Your leave request has been APPROVED by the manager.\n\n" +
+            "Greetings from ELMS Pro.\n\n" +
 
-            "Enjoy your leave.\n\n" +
+            "We are pleased to inform you that your leave request has been APPROVED.\n\n" +
+
+            "------------------------------------------\n" +
+
+            "Employee Code : " + leaveRequest.getEmployee().getEmployeeCode() + "\n" +
+
+            "Leave Type : " + leaveRequest.getLeaveType().getLeaveName() + "\n" +
+
+            "Start Date : " + leaveRequest.getStartDate() + "\n" +
+
+            "End Date : " + leaveRequest.getEndDate() + "\n" +
+
+            "Total Days : " + leaveRequest.getTotalDays() + "\n\n" +
+
+            "Manager Remarks :\n" +
+
+            leaveRequest.getManagerRemarks() + "\n\n" +
+
+            "Enjoy your leave!\n\n" +
 
             "Regards,\n" +
+
             "ELMS Pro Team"
+
     );
 
     mailSender.send(message);
 }
 
-public void sendLeaveRejectedEmail(String toEmail,
-                                   String employeeName) {
+    public void sendLeaveRejectedEmail(LeaveRequest leaveRequest) {
 
     SimpleMailMessage message = new SimpleMailMessage();
 
     message.setFrom("kotagirimanoj2006@gmail.com");
-    message.setTo(toEmail);
 
-    message.setSubject("❌ Leave Rejected | ELMS Pro");
+    message.setTo(leaveRequest.getEmployee().getEmail());
+
+    message.setSubject("❌ ELMS Pro | Leave Request Rejected");
 
     message.setText(
-            "Hello " + employeeName + ",\n\n" +
 
-            "We are sorry to inform you that your leave request has been REJECTED.\n\n" +
+            "Dear " + leaveRequest.getEmployee().getFirstName() + ",\n\n" +
 
-            "Please contact your manager for more information.\n\n" +
+            "Greetings from ELMS Pro.\n\n" +
+
+            "Your leave request has been REJECTED.\n\n" +
+
+            "------------------------------------------\n" +
+
+            "Employee Code : " + leaveRequest.getEmployee().getEmployeeCode() + "\n" +
+
+            "Leave Type : " + leaveRequest.getLeaveType().getLeaveName() + "\n" +
+
+            "Start Date : " + leaveRequest.getStartDate() + "\n" +
+
+            "End Date : " + leaveRequest.getEndDate() + "\n" +
+
+            "Total Days : " + leaveRequest.getTotalDays() + "\n\n" +
+
+            "Manager Remarks :\n" +
+
+            leaveRequest.getManagerRemarks() + "\n\n" +
+
+            "If you have any questions, please contact your manager.\n\n" +
 
             "Regards,\n" +
+
             "ELMS Pro Team"
+
     );
 
     mailSender.send(message);
-}
-
-
+    }
 }

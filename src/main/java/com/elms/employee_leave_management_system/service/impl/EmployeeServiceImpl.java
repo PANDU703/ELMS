@@ -50,6 +50,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     return savedEmployee;
 }
 
+   
+
     @Override
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
@@ -99,11 +101,21 @@ public class EmployeeServiceImpl implements EmployeeService {
             .orElseThrow(() ->
                     new ResourceNotFoundException("Invalid Email"));
 
-    if (!passwordEncoder.matches(password, employee.getPassword())) {
-        throw new RuntimeException("Invalid Password");
+        if (!passwordEncoder.matches(password, employee.getPassword())) {
+            throw new RuntimeException("Invalid Password");
+        }
+
+        return employee;
     }
 
-    return employee;
-}
+    @Override
+    public Employee getEmployeeByEmail(String email) {
+
+        return employeeRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Employee not found with email : " + email));
+
+    }
 
 }

@@ -17,14 +17,19 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     private final LeaveRequestRepository leaveRequestRepository;
     private final EmailService emailService;
 
-    public LeaveRequestServiceImpl(LeaveRequestRepository leaveRequestRepository, EmailService emailService) {
+    public LeaveRequestServiceImpl(
+            LeaveRequestRepository leaveRequestRepository,
+            EmailService emailService) {
+
         this.leaveRequestRepository = leaveRequestRepository;
         this.emailService = emailService;
     }
 
     @Override
     public LeaveRequest applyLeave(LeaveRequest leaveRequest) {
+
         leaveRequest.setStatus(LeaveStatus.PENDING);
+
         return leaveRequestRepository.save(leaveRequest);
     }
 
@@ -34,43 +39,48 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
+    public List<LeaveRequest> getMyLeaveRequests(String email) {
+        return leaveRequestRepository.findByEmployeeEmail(email);
+    }
+
+    @Override
     public LeaveRequest getLeaveRequestById(Long id) {
+
         return leaveRequestRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Leave Request not found with id : " + id));
+                        new ResourceNotFoundException(
+                                "Leave Request not found with id : " + id));
     }
 
     @Override
-    public LeaveRequest approveLeave(Long id) {
+    public LeaveRequest approveLeave(Long id, String remarks) {
 
-    LeaveRequest leave = getLeaveRequestById(id);
+        LeaveRequest leave = getLeaveRequestById(id);
 
-    leave.setStatus(LeaveStatus.APPROVED);
+        leave.setStatus(LeaveStatus.APPROVED);
 
-    LeaveRequest savedLeave = leaveRequestRepository.save(leave);
+        leave.setManagerRemarks(remarks);
 
-    emailService.sendLeaveApprovedEmail(
-            savedLeave.getEmployee().getEmail(),
-            savedLeave.getEmployee().getFirstName()
-    );
+        LeaveRequest savedLeave = leaveRequestRepository.save(leave);
 
-    return savedLeave;
+        emailService.sendLeaveApprovedEmail(savedLeave);
+
+        return savedLeave;
     }
 
     @Override
-    public LeaveRequest rejectLeave(Long id) {
+    public LeaveRequest rejectLeave(Long id, String remarks) {
 
-    LeaveRequest leave = getLeaveRequestById(id);
+        LeaveRequest leave = getLeaveRequestById(id);
 
-    leave.setStatus(LeaveStatus.REJECTED);
+        leave.setStatus(LeaveStatus.REJECTED);
 
-    LeaveRequest savedLeave = leaveRequestRepository.save(leave);
+        leave.setManagerRemarks(remarks);
 
-    emailService.sendLeaveRejectedEmail(
-            savedLeave.getEmployee().getEmail(),
-            savedLeave.getEmployee().getFirstName()
-    );
+        LeaveRequest savedLeave = leaveRequestRepository.save(leave);
 
-    return savedLeave;
-}
+        emailService.sendLeaveRejectedEmail(savedLeave);
+
+        return savedLeave;
+    }
 }

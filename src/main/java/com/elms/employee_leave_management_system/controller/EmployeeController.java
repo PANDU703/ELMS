@@ -3,6 +3,7 @@ package com.elms.employee_leave_management_system.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import com.elms.employee_leave_management_system.entity.Employee;
 import com.elms.employee_leave_management_system.service.EmployeeService;
@@ -19,8 +20,10 @@ public class EmployeeController {
 
     @PostMapping
     public Employee saveEmployee(@RequestBody Employee employee) {
-        return employeeService.saveEmployee(employee);
+       return employeeService.saveEmployee(employee);
     }
+
+
 
     @GetMapping
     public List<Employee> getAllEmployees() {
@@ -43,5 +46,14 @@ public class EmployeeController {
                                    @RequestBody Employee employee) {
                                 
         return employeeService.updateEmployee(id, employee);
+    }
+
+    @GetMapping("/me")
+    public Employee getLoggedInEmployee(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        return employeeService.getEmployeeByEmail(email);
+
     }
 }

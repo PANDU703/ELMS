@@ -2,6 +2,7 @@ package com.elms.employee_leave_management_system.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.elms.employee_leave_management_system.entity.LeaveRequest;
@@ -27,13 +28,30 @@ public class LeaveRequestController {
         return leaveRequestService.getAllLeaveRequests();
     }
 
+    @GetMapping("/my")
+    public List<LeaveRequest> getMyLeaveRequests(Authentication authentication) {
+        return leaveRequestService.getMyLeaveRequests(authentication.getName());
+    }
+
     @PutMapping("/{id}/approve")
-    public LeaveRequest approveLeave(@PathVariable Long id) {
-        return leaveRequestService.approveLeave(id);
+    public LeaveRequest approveLeave(
+            @PathVariable Long id,
+            @RequestBody LeaveRequest leaveRequest) {
+
+        return leaveRequestService.approveLeave(
+                id,
+                leaveRequest.getManagerRemarks()
+        );
     }
 
     @PutMapping("/{id}/reject")
-    public LeaveRequest rejectLeave(@PathVariable Long id) {
-        return leaveRequestService.rejectLeave(id);
+    public LeaveRequest rejectLeave(
+            @PathVariable Long id,
+            @RequestBody LeaveRequest leaveRequest) {
+
+        return leaveRequestService.rejectLeave(
+                id,
+                leaveRequest.getManagerRemarks()
+        );
     }
 }

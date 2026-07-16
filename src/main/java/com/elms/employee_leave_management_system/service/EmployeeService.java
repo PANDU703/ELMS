@@ -18,4 +18,6 @@ public interface EmployeeService {
 
     Employee loginEmployee(String email, String password);
 
+    Employee getEmployeeByEmail(String email);
+
 }

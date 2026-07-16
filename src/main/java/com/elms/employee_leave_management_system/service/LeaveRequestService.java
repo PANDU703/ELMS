@@ -10,10 +10,12 @@ public interface LeaveRequestService {
 
     List<LeaveRequest> getAllLeaveRequests();
 
+    List<LeaveRequest> getMyLeaveRequests(String email);
+
     LeaveRequest getLeaveRequestById(Long id);
 
-    LeaveRequest approveLeave(Long id);
+    LeaveRequest approveLeave(Long id, String remarks);
 
-    LeaveRequest rejectLeave(Long id);
+    LeaveRequest rejectLeave(Long id, String remarks);
 
 }
