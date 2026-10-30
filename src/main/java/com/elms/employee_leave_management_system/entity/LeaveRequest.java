@@ -1,8 +1,10 @@
+
 package com.elms.employee_leave_management_system.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.elms.employee_leave_management_system.enums.LeaveStatus;
 
 import jakarta.persistence.*;
@@ -24,9 +26,7 @@ public class LeaveRequest {
     private LeaveType leaveType;
 
     private LocalDate startDate;
-
     private LocalDate endDate;
-
     private Integer totalDays;
 
     @Column(columnDefinition = "TEXT")
@@ -39,6 +39,18 @@ public class LeaveRequest {
     private String managerRemarks;
 
     private LocalDateTime appliedAt;
+
+    // Medical certificate information
+    private String certificateFileName;
+    private String certificateContentType;
+
+    @JsonIgnore
+    @Column(columnDefinition = "TEXT")
+    private String certificateStoragePath;
+
+    // Complete AI screening response stored as JSON
+    @Column(name = "screening_result_json", columnDefinition = "LONGTEXT")
+    private String screeningResultJson;
 
     public LeaveRequest() {
     }
@@ -117,5 +129,38 @@ public class LeaveRequest {
 
     public void setAppliedAt(LocalDateTime appliedAt) {
         this.appliedAt = appliedAt;
+    }
+
+    public String getCertificateFileName() {
+        return certificateFileName;
+    }
+
+    public void setCertificateFileName(String certificateFileName) {
+        this.certificateFileName = certificateFileName;
+    }
+
+    public String getCertificateContentType() {
+        return certificateContentType;
+    }
+
+    public void setCertificateContentType(String certificateContentType) {
+        this.certificateContentType = certificateContentType;
+    }
+
+    @JsonIgnore
+    public String getCertificateStoragePath() {
+        return certificateStoragePath;
+    }
+
+    public void setCertificateStoragePath(String certificateStoragePath) {
+        this.certificateStoragePath = certificateStoragePath;
+    }
+
+    public String getScreeningResultJson() {
+        return screeningResultJson;
+    }
+
+    public void setScreeningResultJson(String screeningResultJson) {
+        this.screeningResultJson = screeningResultJson;
     }
 }

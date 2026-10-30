@@ -31,3 +31,26 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### ELMS Pro - Python / Medical AI ###
+
+# Python virtual environment
+medical-ai/.venv/
+.venv/
+venv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Private medical certificates
+private-uploads/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python logs
+*.log
